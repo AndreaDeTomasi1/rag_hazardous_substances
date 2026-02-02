@@ -5,6 +5,8 @@ import requests
 import csv
 import os
 import re
+import json
+import gspread
 from datetime import datetime
 from dotenv import load_dotenv
 load_dotenv()
@@ -19,6 +21,14 @@ if not OPENROUTER_API_KEY:
     st.error("❌ API key OpenRouter non configurata")
     st.stop()
 
+GOOGLE_SERVICE_ACCOUNT_JSON = (
+    os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON")
+    or st.secrets.get("GOOGLE_SERVICE_ACCOUNT_JSON")
+)
+
+if not GOOGLE_SERVICE_ACCOUNT_JSON:
+    st.error("❌ Credenziali Google Sheets non configurate")
+    st.stop()
 # ------------------ APRI IL DB PERSISTENTE ------------------
 chroma_client = chromadb.PersistentClient(
     path="chroma_db",
@@ -153,6 +163,32 @@ def log_chat_to_csv(selected_substances, question, answer, retrieved_files):
             sanitize_for_csv(answer),
             ";".join(retrieved_files) if retrieved_files else ""
         ])
+
+# ------------------ FUNZIONE LOG SU GOOGLE SHEET ------------------
+def log_chat_to_sheet(selected_substances, question, answer, retrieved_files):
+    creds_dict = json.loads(GOOGLE_SERVICE_ACCOUNT_JSON)
+    gc = gspread.service_account_from_dict(creds_dict)
+    
+    sh = gc.open("ChatLogs")  # nome del Google Sheet
+    worksheet = sh.sheet1
+
+    # Inserisci header se vuoto
+    if worksheet.row_count == 1 and not worksheet.get_all_values()[0]:
+        worksheet.append_row([
+            "timestamp",
+            "selected_substances",
+            "question",
+            "answer",
+            "retrieved_files"
+        ])
+    
+    worksheet.append_row([
+        datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        ";".join(selected_substances) if selected_substances else "",
+        sanitize_for_csv(question),
+        sanitize_for_csv(answer),
+        ";".join(retrieved_files) if retrieved_files else ""
+    ])
 
 # ------------------ STREAMLIT ------------------
 CSV_LOG_PATH = "chat_log.csv"

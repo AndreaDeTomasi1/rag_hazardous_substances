@@ -6,3 +6,4 @@ __pycache__/
 *.pyd
 first_trial.ipynb
 query_db.py
+google_cloud_service_key.json
