@@ -8,6 +8,7 @@ import re
 import json
 import gspread
 from datetime import datetime
+import pytz
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -33,6 +34,11 @@ GOOGLE_SERVICE_ACCOUNT_JSON = get_secret("GOOGLE_SERVICE_ACCOUNT_JSON")
 if not GOOGLE_SERVICE_ACCOUNT_JSON:
     st.error("❌ Credenziali Google Sheets non configurate")
     st.stop()
+
+utc_now = datetime.utcnow()
+tz = pytz.timezone("Europe/Rome")
+local_now = utc_now.replace(tzinfo=pytz.utc).astimezone(tz)
+
 # ------------------ APRI IL DB PERSISTENTE ------------------
 chroma_client = chromadb.PersistentClient(
     path="chroma_db",
@@ -161,7 +167,7 @@ def log_chat_to_csv(selected_substances, question, answer, retrieved_files):
             ])
 
         writer.writerow([
-            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            local_now.strftime("%Y-%m-%d %H:%M:%S"),
             ";".join(selected_substances) if selected_substances else "",
             sanitize_for_csv(question),
             sanitize_for_csv(answer),
@@ -187,7 +193,7 @@ def log_chat_to_sheet(selected_substances, question, answer, retrieved_files):
         ])
     
     worksheet.append_row([
-        datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        local_now.strftime("%Y-%m-%d %H:%M:%S"),
         ";".join(selected_substances) if selected_substances else "",
         sanitize_for_csv(question),
         sanitize_for_csv(answer),
