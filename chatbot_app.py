@@ -211,6 +211,7 @@ with st.container():
             response, retrieved_files = chatbot_response(query)
             st.session_state.chat_history.append(f"Bot: {response}")
             log_chat_to_csv(selected_substances, query, response, retrieved_files)
+            log_chat_to_sheet(selected_substances, query, response, retrieved_files)
             st.session_state.user_input = ""
 
     st.text_input("Scrivi qui il tuo messaggio:", key="user_input", on_change=send_message)
