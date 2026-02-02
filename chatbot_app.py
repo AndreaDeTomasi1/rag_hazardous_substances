@@ -6,6 +6,8 @@ import csv
 import os
 import re
 from datetime import datetime
+from dotenv import load_dotenv
+load_dotenv()
 
 # ------------------ APRI IL DB PERSISTENTE ------------------
 chroma_client = chromadb.PersistentClient(
