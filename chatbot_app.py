@@ -9,6 +9,16 @@ from datetime import datetime
 from dotenv import load_dotenv
 load_dotenv()
 
+# ------------------ CARICA VARIABILI D'AMBIENTE ------------------
+OPENROUTER_API_KEY = (
+    st.secrets.get("OPENROUTER_API_KEY")
+    or os.getenv("OPENROUTER_API_KEY")
+)
+
+if not OPENROUTER_API_KEY:
+    st.error("❌ API key OpenRouter non configurata")
+    st.stop()
+
 # ------------------ APRI IL DB PERSISTENTE ------------------
 chroma_client = chromadb.PersistentClient(
     path="chroma_db",
@@ -105,8 +115,7 @@ def chatbot_response(query):
     }
 
     # Chiamata all'API Open Router
-    HF_API_TOKEN = os.getenv("HF_API_TOKEN")
-    headers = {"Authorization": f"Bearer {HF_API_TOKEN}", "Content-Type": "application/json"}
+    headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "Content-Type": "application/json"}
     response = requests.post(
         "https://openrouter.ai/api/v1/chat/completions",
         headers=headers,
