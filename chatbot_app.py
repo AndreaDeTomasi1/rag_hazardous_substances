@@ -12,19 +12,23 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # ------------------ CARICA VARIABILI D'AMBIENTE ------------------
-OPENROUTER_API_KEY = (
-    st.secrets.get("OPENROUTER_API_KEY")
-    or os.getenv("OPENROUTER_API_KEY")
-)
+def get_secret(key):
+    # Prova prima da .env
+    value = os.getenv(key)
+    if value:
+        return value
+    # Se non c'è, prova da st.secrets
+    if st._is_running_with_streamlit:
+        return st.secrets.get(key)
+    return None
+
+OPENROUTER_API_KEY = get_secret("OPENROUTER_API_KEY")
 
 if not OPENROUTER_API_KEY:
     st.error("❌ API key OpenRouter non configurata")
     st.stop()
 
-GOOGLE_SERVICE_ACCOUNT_JSON = (
-    os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON")
-    or st.secrets.get("GOOGLE_SERVICE_ACCOUNT_JSON")
-)
+GOOGLE_SERVICE_ACCOUNT_JSON = get_secret("GOOGLE_SERVICE_ACCOUNT_JSON")
 
 if not GOOGLE_SERVICE_ACCOUNT_JSON:
     st.error("❌ Credenziali Google Sheets non configurate")
@@ -173,7 +177,7 @@ def log_chat_to_sheet(selected_substances, question, answer, retrieved_files):
     worksheet = sh.sheet1
 
     # Inserisci header se vuoto
-    if worksheet.row_count == 1 and not worksheet.get_all_values()[0]:
+    if not worksheet.get_all_values()[0]:
         worksheet.append_row([
             "timestamp",
             "selected_substances",
