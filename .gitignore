@@ -1,0 +1,9 @@
+.env
+db_creation.py
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+first_trial.ipynb
+query_db.py
