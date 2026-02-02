@@ -35,9 +35,8 @@ if not GOOGLE_SERVICE_ACCOUNT_JSON:
     st.error("❌ Credenziali Google Sheets non configurate")
     st.stop()
 
-utc_now = datetime.utcnow()
 tz = pytz.timezone("Europe/Rome")
-local_now = utc_now.replace(tzinfo=pytz.utc).astimezone(tz)
+local_now = datetime.now(tz)
 
 # ------------------ APRI IL DB PERSISTENTE ------------------
 chroma_client = chromadb.PersistentClient(
