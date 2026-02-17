@@ -1,9 +1,11 @@
 .env
-db_creation.py
+2_db_creation.py
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 first_trial.ipynb
 query_db.py
+parse_html.py
 google_cloud_service_key.json
+chunks_icsc.csv
