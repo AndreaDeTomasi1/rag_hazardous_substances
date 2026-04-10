@@ -45,3 +45,18 @@ Il sistema segue la classica pipeline RAG:
 ├── chat_log.csv          # File CSV per il salvataggio dei log delle conversazioni
 └── README.md             # Documentazione del progetto
 ```
+
+## 🤖 Modelli LLM tramite OpenRouter
+
+Questo progetto utilizza **OpenRouter** per l’accesso ai modelli di linguaggio (LLM) e di embedding. OpenRouter fornisce un’interfaccia unificata che consente di integrare facilmente modelli provenienti da diversi provider (come OpenAI, Anthropic, Meta, Google e altri) utilizzando una singola API.
+
+### 🔗 Cos'è OpenRouter?
+
+**OpenRouter** è una piattaforma che permette di:
+- Accedere a molteplici modelli LLM tramite un'unica API.
+- Semplificare il cambio di modello senza modificare significativamente il codice.
+- Ottimizzare costi e prestazioni scegliendo il modello più adatto al caso d’uso.
+- Garantire maggiore flessibilità e scalabilità dell’architettura RAG.
+
+Per maggiori informazioni, visita il sito ufficiale:  
+👉 https://openrouter.ai/
