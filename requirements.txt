@@ -3,3 +3,4 @@ chromadb>=0.4.24
 requests>=2.31.0
 python-dotenv>=1.0.0
 gspread>=5.7.0
+pytz==2025.2
